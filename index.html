@@ -255,8 +255,7 @@
       .anchor-nav a:hover,
       .tag-filter:hover,
       .ghost-button:hover,
-      .resource-link:hover,
-      .secondary-link:hover {
+      .resource-link:hover {
         transform: translateY(-1px);
       }
 
@@ -276,7 +275,6 @@
       .tag-filter,
       .ghost-button,
       .resource-link,
-      .secondary-link,
       .concept-toggle,
       .back-to-top {
         font: inherit;
@@ -583,12 +581,11 @@
 
       .resource-actions {
         margin-top: auto;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
       }
 
-      .resource-link,
-      .secondary-link {
+      .resource-link {
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -600,10 +597,6 @@
         border-radius: 999px;
         background: var(--ink);
         color: #fff;
-      }
-
-      .secondary-link {
-        color: var(--accent-strong);
       }
 
       .note-box {
@@ -2353,13 +2346,7 @@
         primaryLink.rel = "noopener noreferrer";
         primaryLink.textContent = "Open resource ↗";
 
-        const secondaryLink = document.createElement("a");
-        secondaryLink.className = "secondary-link";
-        secondaryLink.href = `#resource-${resource.id}`;
-        secondaryLink.textContent = "Copyable anchor";
-
         actions.appendChild(primaryLink);
-        actions.appendChild(secondaryLink);
         article.appendChild(actions);
 
         return article;
