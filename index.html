@@ -759,8 +759,8 @@
       <div class="sticky-shell">
         <nav class="anchor-nav" aria-label="Section navigation">
           <div class="anchor-nav-links">
-            <a href="#roadmap">Roadmap</a>
-            <a href="#comparisons">Comparisons</a>
+            <a href="#roadmap" data-browse-only>Roadmap</a>
+            <a href="#comparisons" data-browse-only>Comparisons</a>
             <a href="#foundations">Foundations</a>
             <a href="#production-architectures">Production Architectures</a>
             <a href="#advanced-rag">Advanced RAG</a>
@@ -768,7 +768,7 @@
             <a href="#projects">End-to-End Repos</a>
             <a href="#evaluation">Evaluation &amp; Observability</a>
             <a href="#research-papers">Research Papers</a>
-            <a href="#build-next">What to Build Next</a>
+            <a href="#build-next" data-browse-only>What to Build Next</a>
           </div>
         </nav>
 
@@ -805,7 +805,7 @@
       </div>
 
       <main id="app">
-        <section class="block" id="roadmap">
+        <section class="block" id="roadmap" data-browse-only>
           <div class="block-header">
             <div>
               <h2>Quick-Start Roadmap</h2>
@@ -834,7 +834,7 @@
           <div class="roadmap-grid" id="roadmapGrid"></div>
         </section>
 
-        <section class="block" id="comparisons">
+        <section class="block" id="comparisons" data-browse-only>
           <div class="block-header">
             <div>
               <h2>Comparison Tables</h2>
@@ -1062,7 +1062,7 @@
           </div>
         </section>
 
-        <section class="block" id="build-next">
+        <section class="block" id="build-next" data-browse-only>
           <div class="block-header">
             <div>
               <h2>What to Build Next</h2>
@@ -2143,6 +2143,8 @@
       const filterState = document.getElementById("filterState");
       const roadmapGrid = document.getElementById("roadmapGrid");
       const backToTop = document.getElementById("backToTop");
+      const libraryBlock = document.getElementById("library");
+      const browseOnlyElements = document.querySelectorAll("[data-browse-only]");
 
       function fillSelect(select, firstLabel, values) {
         select.innerHTML = "";
@@ -2175,6 +2177,24 @@
           return { label: "🚀 Production-Ready Pattern", className: "production" };
         }
         return { label: "🔬 Research-Level", className: "research" };
+      }
+
+      function hasActiveFilters() {
+        return Boolean(
+          searchInput.value.trim() ||
+          sectionFilter.value ||
+          typeFilter.value ||
+          difficultyFilter.value ||
+          recentOnly.checked ||
+          activeTags.size > 0
+        );
+      }
+
+      function setFocusedResultsMode(active) {
+        document.body.classList.toggle("results-mode", active);
+        browseOnlyElements.forEach((element) => {
+          element.hidden = active;
+        });
       }
 
       function matchesFilters(resource) {
@@ -2366,8 +2386,12 @@
         });
       }
 
-      function renderResources() {
+      function renderResources({ focusResults = false } = {}) {
+        const wasFocusedResultsMode = document.body.classList.contains("results-mode");
         const filtered = resources.filter(matchesFilters);
+        const focusedResultsMode = hasActiveFilters();
+
+        setFocusedResultsMode(focusedResultsMode);
 
         sections.forEach((section) => {
           const container = document.querySelector(`[data-resource-section="${section}"]`);
@@ -2423,6 +2447,10 @@
             empty.remove();
           }
         }
+
+        if (focusResults && focusedResultsMode && !wasFocusedResultsMode) {
+          libraryBlock.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       }
 
       function setStats() {
@@ -2445,7 +2473,7 @@
           activeTags.add(tag);
           event.currentTarget.setAttribute("aria-pressed", "true");
         }
-        renderResources();
+        renderResources({ focusResults: true });
       }
 
       fillSelect(sectionFilter, "All sections", sections);
@@ -2457,8 +2485,8 @@
       });
 
       [searchInput, sectionFilter, typeFilter, difficultyFilter, recentOnly].forEach((element) => {
-        element.addEventListener("input", renderResources);
-        element.addEventListener("change", renderResources);
+        element.addEventListener("input", () => renderResources({ focusResults: true }));
+        element.addEventListener("change", () => renderResources({ focusResults: true }));
       });
 
       clearFilters.addEventListener("click", () => {
@@ -2471,7 +2499,7 @@
         document.querySelectorAll(".tag-filter").forEach((button) => {
           button.setAttribute("aria-pressed", "false");
         });
-        renderResources();
+        renderResources({ focusResults: true });
       });
 
       document.addEventListener("click", (event) => {
