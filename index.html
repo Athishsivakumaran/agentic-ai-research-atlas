@@ -212,11 +212,9 @@
       }
 
       .sticky-shell {
-        position: sticky;
-        top: 0;
-        z-index: 20;
+        position: relative;
+        z-index: 6;
         padding-top: 16px;
-        backdrop-filter: blur(12px);
       }
 
       .anchor-nav,
@@ -228,8 +226,12 @@
       }
 
       .anchor-nav {
+        position: sticky;
+        top: 14px;
+        z-index: 24;
         margin-top: 18px;
         padding: 14px 16px;
+        backdrop-filter: blur(12px);
       }
 
       .anchor-nav-links {
@@ -364,8 +366,17 @@
         margin-top: 28px;
       }
 
-      section[id] {
-        scroll-margin-top: 164px;
+      section[id],
+      article[id] {
+        scroll-margin-top: 104px;
+      }
+
+      body.results-mode .anchor-nav {
+        display: none;
+      }
+
+      body.results-mode .sticky-shell {
+        padding-top: 8px;
       }
 
       .block {
