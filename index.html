@@ -1,0 +1,2504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agentic AI, Context Engineering, and Advanced RAG Research Atlas</title>
+    <style>
+      :root {
+        --ink: #11243a;
+        --ink-soft: #425467;
+        --paper: #f8f4ea;
+        --paper-strong: #fffdfa;
+        --line: rgba(17, 36, 58, 0.12);
+        --accent: #c45f3f;
+        --accent-strong: #a4492c;
+        --teal: #166a6a;
+        --gold: #b98924;
+        --plum: #7a4d6b;
+        --surface: rgba(255, 253, 250, 0.84);
+        --shadow: 0 20px 60px rgba(17, 36, 58, 0.08);
+        --radius-lg: 24px;
+        --radius-md: 16px;
+        --radius-sm: 12px;
+        --max-width: 1320px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(196, 95, 63, 0.16), transparent 28%),
+          radial-gradient(circle at top right, rgba(22, 106, 106, 0.14), transparent 24%),
+          linear-gradient(180deg, #f8f4ea 0%, #f3efe6 52%, #efe8dc 100%);
+        font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+        line-height: 1.55;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(17, 36, 58, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(17, 36, 58, 0.025) 1px, transparent 1px);
+        background-size: 32px 32px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), transparent 85%);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+      }
+
+      .skip-link:focus {
+        left: 16px;
+        top: 16px;
+        z-index: 100;
+        padding: 12px 16px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+      }
+
+      .page-shell {
+        position: relative;
+        z-index: 1;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 24px 20px 72px;
+      }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        margin-top: 8px;
+        padding: 32px;
+        border: 1px solid rgba(17, 36, 58, 0.08);
+        border-radius: 30px;
+        background:
+          linear-gradient(135deg, rgba(255, 253, 250, 0.96), rgba(251, 244, 231, 0.88)),
+          linear-gradient(135deg, rgba(196, 95, 63, 0.05), rgba(22, 106, 106, 0.05));
+        box-shadow: var(--shadow);
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        right: -64px;
+        top: -52px;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(196, 95, 63, 0.12), transparent 68%);
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.85fr);
+        gap: 28px;
+        position: relative;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(17, 36, 58, 0.06);
+        color: var(--ink-soft);
+        font-size: 0.92rem;
+        letter-spacing: 0.02em;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+        line-height: 1.08;
+      }
+
+      h1 {
+        max-width: 13ch;
+        font-size: clamp(2.5rem, 5vw, 4.7rem);
+      }
+
+      .hero p.lead {
+        max-width: 68ch;
+        margin: 18px 0 0;
+        color: var(--ink-soft);
+        font-size: 1.08rem;
+      }
+
+      .hero-stat-grid,
+      .mini-card-grid,
+      .build-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .hero-stat-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 24px;
+      }
+
+      .mini-card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-content: start;
+      }
+
+      .stat-card,
+      .mini-card,
+      .roadmap-card,
+      .build-card,
+      .legend-card,
+      .compare-card,
+      .section-card,
+      .empty-state,
+      .resource-card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--surface);
+        backdrop-filter: blur(10px);
+      }
+
+      .stat-card {
+        padding: 16px 18px;
+      }
+
+      .stat-card .value {
+        display: block;
+        margin-top: 8px;
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+
+      .stat-card .label,
+      .mini-card .label {
+        color: var(--ink-soft);
+        font-size: 0.92rem;
+      }
+
+      .mini-card {
+        padding: 18px;
+      }
+
+      .mini-card h3 {
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+      }
+
+      .mini-card ul,
+      .roadmap-card ul,
+      .build-card ul {
+        margin: 12px 0 0;
+        padding-left: 18px;
+      }
+
+      .sticky-shell {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        padding-top: 16px;
+        backdrop-filter: blur(12px);
+      }
+
+      .anchor-nav,
+      .filter-bar {
+        border: 1px solid rgba(17, 36, 58, 0.08);
+        border-radius: 20px;
+        background: rgba(255, 250, 243, 0.86);
+        box-shadow: 0 14px 34px rgba(17, 36, 58, 0.07);
+      }
+
+      .anchor-nav {
+        margin-top: 18px;
+        padding: 14px 16px;
+      }
+
+      .anchor-nav-links {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .anchor-nav a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(17, 36, 58, 0.05);
+        text-decoration: none;
+        font-size: 0.94rem;
+        transition: background 0.2s ease, transform 0.2s ease;
+      }
+
+      .anchor-nav a:hover,
+      .tag-filter:hover,
+      .ghost-button:hover,
+      .resource-link:hover,
+      .secondary-link:hover {
+        transform: translateY(-1px);
+      }
+
+      .filter-bar {
+        margin-top: 14px;
+        padding: 18px;
+      }
+
+      .filter-grid {
+        display: grid;
+        grid-template-columns: 1.35fr repeat(3, minmax(0, 0.58fr)) auto;
+        gap: 12px;
+      }
+
+      .filter-control,
+      .filter-pill,
+      .tag-filter,
+      .ghost-button,
+      .resource-link,
+      .secondary-link,
+      .concept-toggle,
+      .back-to-top {
+        font: inherit;
+      }
+
+      .filter-control {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fffdfa;
+        color: var(--ink);
+      }
+
+      .filter-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      .ghost-button {
+        border: 1px solid rgba(17, 36, 58, 0.12);
+        border-radius: 14px;
+        background: rgba(17, 36, 58, 0.04);
+        color: var(--ink);
+        padding: 12px 16px;
+        cursor: pointer;
+      }
+
+      .tag-row,
+      .filter-meta,
+      .badge-row,
+      .resource-actions,
+      .resource-meta,
+      .concept-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .tag-row {
+        margin-top: 14px;
+        align-items: center;
+      }
+
+      .tag-filter {
+        border: 1px solid rgba(17, 36, 58, 0.1);
+        border-radius: 999px;
+        background: #fffdfa;
+        color: var(--ink);
+        padding: 9px 14px;
+        cursor: pointer;
+      }
+
+      .tag-filter[aria-pressed="true"] {
+        border-color: transparent;
+        color: #fff;
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      }
+
+      .filter-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(17, 36, 58, 0.05);
+        color: var(--ink-soft);
+        font-size: 0.92rem;
+      }
+
+      .filter-pill input {
+        accent-color: var(--accent);
+      }
+
+      .filter-meta {
+        margin-top: 14px;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .filter-summary {
+        color: var(--ink-soft);
+      }
+
+      main {
+        margin-top: 28px;
+      }
+
+      section[id] {
+        scroll-margin-top: 164px;
+      }
+
+      .block {
+        margin-top: 24px;
+        padding: 28px;
+        border-radius: 28px;
+        border: 1px solid rgba(17, 36, 58, 0.08);
+        background: rgba(255, 252, 247, 0.78);
+        box-shadow: 0 16px 40px rgba(17, 36, 58, 0.06);
+      }
+
+      .block-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-end;
+        margin-bottom: 20px;
+      }
+
+      .block-header p {
+        margin: 10px 0 0;
+        max-width: 72ch;
+        color: var(--ink-soft);
+      }
+
+      .legend-row,
+      .roadmap-grid,
+      .compare-grid,
+      .section-stack {
+        display: grid;
+        gap: 18px;
+      }
+
+      .legend-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .legend-card,
+      .roadmap-card,
+      .compare-card,
+      .build-card {
+        padding: 18px 20px;
+      }
+
+      .roadmap-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .compare-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .compare-table-wrap {
+        overflow-x: auto;
+        margin-top: 16px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 14px 12px;
+        border-bottom: 1px solid rgba(17, 36, 58, 0.09);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        font-size: 0.9rem;
+        color: var(--ink-soft);
+        letter-spacing: 0.02em;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .compare-note {
+        margin-top: 14px;
+        color: var(--ink-soft);
+        font-size: 0.94rem;
+      }
+
+      .section-stack {
+        margin-top: 18px;
+      }
+
+      .section-card {
+        padding: 22px;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+
+      .section-header p {
+        margin: 10px 0 0;
+        color: var(--ink-soft);
+      }
+
+      .count-badge {
+        white-space: nowrap;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(17, 36, 58, 0.05);
+        color: var(--ink-soft);
+        font-size: 0.92rem;
+      }
+
+      .resource-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .resource-card {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding: 18px;
+      }
+
+      .resource-card h3 {
+        font-size: 1.35rem;
+      }
+
+      .resource-meta {
+        color: var(--ink-soft);
+        font-size: 0.93rem;
+      }
+
+      .meta-chip,
+      .domain-chip,
+      .badge-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: rgba(17, 36, 58, 0.06);
+      }
+
+      .badge-chip.must-read {
+        background: rgba(185, 137, 36, 0.14);
+        color: #7a5b0b;
+      }
+
+      .badge-chip.production {
+        background: rgba(22, 106, 106, 0.14);
+        color: #0f5454;
+      }
+
+      .badge-chip.research {
+        background: rgba(122, 77, 107, 0.14);
+        color: #6e3e60;
+      }
+
+      .resource-card p {
+        margin: 0;
+      }
+
+      .resource-card .label {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--ink-soft);
+        font-size: 0.85rem;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+
+      .concept-row {
+        align-items: center;
+      }
+
+      .concept-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: rgba(196, 95, 63, 0.08);
+        color: var(--ink);
+        font-size: 0.88rem;
+      }
+
+      .concept-toggle {
+        border: none;
+        background: transparent;
+        color: var(--accent-strong);
+        cursor: pointer;
+        padding: 0;
+        font-weight: 600;
+      }
+
+      .resource-actions {
+        margin-top: auto;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .resource-link,
+      .secondary-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .resource-link {
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+      }
+
+      .secondary-link {
+        color: var(--accent-strong);
+      }
+
+      .note-box {
+        padding: 12px 14px;
+        border-left: 4px solid rgba(185, 137, 36, 0.56);
+        border-radius: 12px;
+        background: rgba(185, 137, 36, 0.09);
+        color: var(--ink-soft);
+      }
+
+      .empty-state {
+        padding: 22px;
+        color: var(--ink-soft);
+      }
+
+      .build-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 18px;
+      }
+
+      .build-card {
+        padding: 20px;
+      }
+
+      .back-to-top {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 30;
+        display: none;
+        padding: 12px 16px;
+        border: none;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 12px 30px rgba(17, 36, 58, 0.2);
+      }
+
+      .back-to-top.show {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .footer-note {
+        margin-top: 18px;
+        color: var(--ink-soft);
+      }
+
+      @media (max-width: 1100px) {
+        .hero-grid,
+        .filter-grid,
+        .legend-row,
+        .roadmap-grid,
+        .build-grid,
+        .resource-grid,
+        .hero-stat-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .filter-actions {
+          justify-content: stretch;
+        }
+
+        .ghost-button {
+          width: 100%;
+        }
+
+        .mini-card-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .page-shell {
+          padding-inline: 14px;
+        }
+
+        .hero,
+        .block,
+        .section-card {
+          padding: 20px;
+        }
+
+        .sticky-shell {
+          padding-top: 10px;
+        }
+
+        .anchor-nav-links {
+          overflow-x: auto;
+          flex-wrap: nowrap;
+          padding-bottom: 4px;
+        }
+
+        h1 {
+          max-width: 100%;
+        }
+
+        .block-header,
+        .section-header,
+        .resource-actions,
+        .filter-meta {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#app">Skip to app</a>
+    <div class="page-shell">
+      <header class="hero" id="top">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">Research Atlas • Free resources • 2024–2026 heavy</div>
+            <h1>Agentic AI, Context Engineering, and Advanced RAG</h1>
+            <p class="lead">
+              A single-file editorial app for AI engineers who want the highest-signal free
+              resources on production-grade agent systems, modern context engineering, and
+              advanced RAG patterns. The list is intentionally biased toward official docs,
+              engineering blogs, GitHub repos, and core papers that teach you how to build,
+              evaluate, and harden real systems.
+            </p>
+            <div class="hero-stat-grid">
+              <div class="stat-card">
+                <span class="label">Curated resources</span>
+                <span class="value" id="stat-total">0</span>
+              </div>
+              <div class="stat-card">
+                <span class="label">From 2024–2026</span>
+                <span class="value" id="stat-recent">0</span>
+              </div>
+              <div class="stat-card">
+                <span class="label">Code-first or primary sources</span>
+                <span class="value" id="stat-primary">0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-card-grid">
+            <div class="mini-card">
+              <span class="label">How to use this app</span>
+              <h3>Move fast without losing depth</h3>
+              <ul>
+                <li>Start with the roadmap if you want the shortest path to competence.</li>
+                <li>Use filters when you want only code repos, papers, or production patterns.</li>
+                <li>Jump straight to cards tagged `Must Read`, `Production-Ready`, or `Research-Level`.</li>
+              </ul>
+            </div>
+            <div class="mini-card">
+              <span class="label">What is prioritized</span>
+              <h3>Signal over surface area</h3>
+              <ul>
+                <li>Production architectures, tool design, memory, observability, and eval loops.</li>
+                <li>Advanced RAG beyond vanilla vector search: hybrid, reranking, corrective, graph, and memory-backed retrieval.</li>
+                <li>Resources you can actually build from, not thin commentary or vendor fluff.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="sticky-shell">
+        <nav class="anchor-nav" aria-label="Section navigation">
+          <div class="anchor-nav-links">
+            <a href="#roadmap">Roadmap</a>
+            <a href="#comparisons">Comparisons</a>
+            <a href="#foundations">Foundations</a>
+            <a href="#production-architectures">Production Architectures</a>
+            <a href="#advanced-rag">Advanced RAG</a>
+            <a href="#context-memory">Context Engineering &amp; Memory</a>
+            <a href="#projects">End-to-End Repos</a>
+            <a href="#evaluation">Evaluation &amp; Observability</a>
+            <a href="#research-papers">Research Papers</a>
+            <a href="#build-next">What to Build Next</a>
+          </div>
+        </nav>
+
+        <section class="filter-bar" aria-labelledby="filters-title">
+          <div class="block-header" style="margin-bottom: 14px;">
+            <div>
+              <h2 id="filters-title">Filter the atlas</h2>
+              <p>Search by topic, narrow by section or type, or stack tag filters to isolate only the highest-signal material.</p>
+            </div>
+          </div>
+          <div class="filter-grid">
+            <input id="searchInput" class="filter-control" type="search" placeholder="Search titles, concepts, notes, or why it matters..." aria-label="Search resources" />
+            <select id="sectionFilter" class="filter-control" aria-label="Filter by section"></select>
+            <select id="typeFilter" class="filter-control" aria-label="Filter by type"></select>
+            <select id="difficultyFilter" class="filter-control" aria-label="Filter by difficulty"></select>
+            <div class="filter-actions">
+              <button id="clearFilters" class="ghost-button" type="button">Clear filters</button>
+            </div>
+          </div>
+          <div class="tag-row">
+            <button class="tag-filter" data-tag="must-read" aria-pressed="false" type="button">⭐ Must Read / Must Build</button>
+            <button class="tag-filter" data-tag="production" aria-pressed="false" type="button">🚀 Production-Ready Pattern</button>
+            <button class="tag-filter" data-tag="research" aria-pressed="false" type="button">🔬 Research-Level</button>
+            <label class="filter-pill">
+              <input id="recentOnly" type="checkbox" />
+              Show only 2024–2026
+            </label>
+          </div>
+          <div class="filter-meta">
+            <div class="filter-summary" id="filterSummary">Showing 0 resources.</div>
+            <div class="filter-pill" id="filterState">All sections • all types • all levels</div>
+          </div>
+        </section>
+      </div>
+
+      <main id="app">
+        <section class="block" id="roadmap">
+          <div class="block-header">
+            <div>
+              <h2>Quick-Start Roadmap</h2>
+              <p>Use this if you want a clean learning path instead of browsing the entire library first.</p>
+            </div>
+          </div>
+
+          <div class="legend-row">
+            <div class="legend-card">
+              <span class="label">Badge legend</span>
+              <h3>How to read the tags</h3>
+              <p><strong>Must Read / Must Build</strong> means the resource has unusually strong teaching or implementation value.</p>
+            </div>
+            <div class="legend-card">
+              <span class="label">Badge legend</span>
+              <h3>Production-Ready Pattern</h3>
+              <p>These resources contain architecture, eval, observability, or tool-design patterns that transfer well to real systems.</p>
+            </div>
+            <div class="legend-card">
+              <span class="label">Badge legend</span>
+              <h3>Research-Level</h3>
+              <p>These push beyond common industry defaults and are worth reading once you can already ship the basics.</p>
+            </div>
+          </div>
+
+          <div class="roadmap-grid" id="roadmapGrid"></div>
+        </section>
+
+        <section class="block" id="comparisons">
+          <div class="block-header">
+            <div>
+              <h2>Comparison Tables</h2>
+              <p>These are the fast mental models for choosing an agent framework and a RAG strategy before you dive into the cards.</p>
+            </div>
+          </div>
+
+          <div class="compare-grid">
+            <div class="compare-card">
+              <span class="label">Agent framework comparison</span>
+              <h3>Which stack should you reach for?</h3>
+              <div class="compare-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Framework</th>
+                      <th>Best when</th>
+                      <th>Why teams pick it</th>
+                      <th>Watch-outs</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>OpenAI Agents SDK</strong></td>
+                      <td>You want a clean code-first agent runtime plus tight access to OpenAI tools and evals.</td>
+                      <td>Fast path to tool-using agents, strong docs, sandbox agents, good fit for single and multi-agent orchestration.</td>
+                      <td>Best experience is in the OpenAI ecosystem; bring your own observability conventions if you want vendor-neutral tracing.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>LangGraph</strong></td>
+                      <td>You need durable, stateful, graph-shaped control over long-running workflows.</td>
+                      <td>Excellent for explicit orchestration, human-in-the-loop control, resumability, and agent state modeling.</td>
+                      <td>Lower-level than batteries-included frameworks, so you need to be comfortable designing the control flow yourself.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Google ADK</strong></td>
+                      <td>You want workflow agents, memory, callbacks, and evaluation in a structured SDK.</td>
+                      <td>Clear primitives for tools, sessions, memory, and orchestration; strong Google ecosystem integration.</td>
+                      <td>Best fit if you are comfortable with the ADK mental model and its service abstractions.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Microsoft Agent Framework</strong></td>
+                      <td>You want enterprise-oriented multi-agent workflows with type-safe orchestration.</td>
+                      <td>Strong for graph workflows, session state, middleware, and interoperability in large enterprise setups.</td>
+                      <td>Heavier than lightweight SDKs; public preview roots matter for change velocity even though 1.0 is production-ready.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>DSPy</strong></td>
+                      <td>You care about optimizing prompts and modules systematically, not hand-tuning prompt strings.</td>
+                      <td>Great for composing and compiling AI programs, especially when you want optimization loops for RAG or agent components.</td>
+                      <td>It is not primarily an operations harness; pair it with stronger runtime and tracing layers for production agents.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>PydanticAI</strong></td>
+                      <td>You want strong typed I/O, validation, and Python-native ergonomics for production-grade agents.</td>
+                      <td>Very good fit when structured outputs, correctness, and clean Python interfaces matter more than graph complexity.</td>
+                      <td>Use it when type safety is central; add separate workflow orchestration if you need deep multi-agent graph control.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="compare-note">Historical note: AutoGen mattered a lot, but its official repo is now in maintenance mode, so new builds should usually start with Microsoft Agent Framework or another actively evolving stack.</p>
+            </div>
+
+            <div class="compare-card">
+              <span class="label">RAG pattern comparison</span>
+              <h3>How advanced RAG patterns differ</h3>
+              <div class="compare-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Pattern</th>
+                      <th>What it adds</th>
+                      <th>Use it when</th>
+                      <th>Main tradeoff</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Contextual Retrieval</strong></td>
+                      <td>Prepend chunk-specific context before indexing to make chunk retrieval less ambiguous.</td>
+                      <td>Your data is fragmented and plain chunk embeddings miss document-level meaning.</td>
+                      <td>Higher indexing cost and preprocessing complexity.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Hybrid dense + sparse retrieval</strong></td>
+                      <td>Combines semantic recall with lexical precision.</td>
+                      <td>You need better robustness across keyword-heavy, acronym-heavy, or exact-match queries.</td>
+                      <td>More knobs to tune around fusion and ranking.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Reranking</strong></td>
+                      <td>Improves final relevance after broad retrieval.</td>
+                      <td>Base retrieval is decent but top results still contain noise.</td>
+                      <td>Extra latency and model cost.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Self-RAG</strong></td>
+                      <td>The model decides when to retrieve and critiques its own generations.</td>
+                      <td>You want adaptive retrieval instead of always-on retrieval.</td>
+                      <td>More complex inference behavior and usually stronger modeling requirements.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>CRAG</strong></td>
+                      <td>Evaluates retrieval quality and triggers corrective actions when retrieval is weak.</td>
+                      <td>You want a plug-in robustness layer for imperfect corpora.</td>
+                      <td>Longer pipeline and more moving parts.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>GraphRAG</strong></td>
+                      <td>Uses structured graph abstractions for multi-hop or thematic discovery over complex corpora.</td>
+                      <td>Your questions need relational reasoning across many entities or themes.</td>
+                      <td>Indexing can be expensive and prompt tuning matters a lot.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>HippoRAG</strong></td>
+                      <td>Treats retrieval more like long-term associative memory using graph structure plus Personalized PageRank.</td>
+                      <td>You care about memory-like retrieval behavior and associative reasoning.</td>
+                      <td>More research-heavy than standard enterprise stacks.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>LightRAG</strong></td>
+                      <td>Targets simpler, faster graph-style RAG with a practical codebase.</td>
+                      <td>You want graph-enhanced retrieval without the full GraphRAG overhead profile.</td>
+                      <td>Still depends on good extraction quality and careful dataset fit.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Evaluation-first RAG</strong></td>
+                      <td>Designs the retrieval system around continuous measurement, not just architecture novelty.</td>
+                      <td>You are moving from prototype to production.</td>
+                      <td>Requires datasets, metrics, traces, and iteration discipline.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="library">
+          <div class="block-header">
+            <div>
+              <h2>Resource Library</h2>
+              <p>Every card includes what the resource covers, why it matters, how difficult it is, and whether it is especially worth reading for production or research depth.</p>
+            </div>
+          </div>
+
+          <div class="section-stack">
+            <section class="section-card" id="foundations">
+              <div class="section-header">
+                <div>
+                  <h3>Agentic AI Foundations</h3>
+                  <p>High-signal framing for what agents are, when to use them, how modern SDKs think about tools and state, and where to start if you want clean mental models before implementation.</p>
+                </div>
+                <span class="count-badge" data-section-count="Agentic AI Foundations">0 shown</span>
+              </div>
+              <div class="resource-grid" data-resource-section="Agentic AI Foundations"></div>
+            </section>
+
+            <section class="section-card" id="production-architectures">
+              <div class="section-header">
+                <div>
+                  <h3>Production-Ready Agent Architectures</h3>
+                  <p>Tool contracts, orchestration patterns, harnesses, long-running execution, and real systems that have to stay reliable outside a demo environment.</p>
+                </div>
+                <span class="count-badge" data-section-count="Production-Ready Agent Architectures">0 shown</span>
+              </div>
+              <div class="resource-grid" data-resource-section="Production-Ready Agent Architectures"></div>
+            </section>
+
+            <section class="section-card" id="advanced-rag">
+              <div class="section-header">
+                <div>
+                  <h3>Advanced RAG Techniques</h3>
+                  <p>Beyond basic vector lookup: contextual retrieval, hybrid retrieval, reranking, agentic RAG, graph-based retrieval, and controllable retrieval behavior.</p>
+                </div>
+                <span class="count-badge" data-section-count="Advanced RAG Techniques">0 shown</span>
+              </div>
+              <div class="resource-grid" data-resource-section="Advanced RAG Techniques"></div>
+            </section>
+
+            <section class="section-card" id="context-memory">
+              <div class="section-header">
+                <div>
+                  <h3>Context Engineering &amp; Memory Systems</h3>
+                  <p>How strong agents manage tool context, memory, compression, retrieval, and long-running state instead of treating prompt text as the whole problem.</p>
+                </div>
+                <span class="count-badge" data-section-count="Context Engineering &amp; Memory Systems">0 shown</span>
+              </div>
+              <div class="resource-grid" data-resource-section="Context Engineering &amp; Memory Systems"></div>
+            </section>
+
+            <section class="section-card" id="projects">
+              <div class="section-header">
+                <div>
+                  <h3>End-to-End Projects (Code Repos)</h3>
+                  <p>Repos worth cloning when you want implementation patterns, not just ideas.</p>
+                </div>
+                <span class="count-badge" data-section-count="End-to-End Projects (Code Repos)">0 shown</span>
+              </div>
+              <div class="resource-grid" data-resource-section="End-to-End Projects (Code Repos)"></div>
+            </section>
+
+            <section class="section-card" id="evaluation">
+              <div class="section-header">
+                <div>
+                  <h3>Evaluation, Monitoring &amp; Debugging</h3>
+                  <p>Where mature teams differentiate themselves: traces, trajectory grading, retrieval evaluation, offline datasets, runtime debugging, and continuous improvement loops.</p>
+                </div>
+                <span class="count-badge" data-section-count="Evaluation, Monitoring &amp; Debugging">0 shown</span>
+              </div>
+              <div class="resource-grid" data-resource-section="Evaluation, Monitoring &amp; Debugging"></div>
+            </section>
+
+            <section class="section-card" id="research-papers">
+              <div class="section-header">
+                <div>
+                  <h3>Research Papers (Important + Recent)</h3>
+                  <p>Read these once you want to understand the frontier directions behind today’s agent and RAG engineering patterns.</p>
+                </div>
+                <span class="count-badge" data-section-count="Research Papers">0 shown</span>
+              </div>
+              <div class="resource-grid" data-resource-section="Research Papers"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="block" id="build-next">
+          <div class="block-header">
+            <div>
+              <h2>What to Build Next</h2>
+              <p>If you want to turn the reading list into skill, build a small but real system in each category.</p>
+            </div>
+          </div>
+
+          <div class="build-grid">
+            <div class="build-card">
+              <span class="label">Project 1</span>
+              <h3>Retrieval-grounded research assistant</h3>
+              <ul>
+                <li>Use hybrid retrieval plus reranking.</li>
+                <li>Add answer citations and retrieval traces.</li>
+                <li>Evaluate recall, precision, faithfulness, and latency before tuning prompts.</li>
+              </ul>
+            </div>
+            <div class="build-card">
+              <span class="label">Project 2</span>
+              <h3>Tool-using operational copilot</h3>
+              <ul>
+                <li>Give the agent a small, well-described toolset and explicit approval boundaries.</li>
+                <li>Trace tool calls and grade trajectories, not just final answers.</li>
+                <li>Use a harness with retries, checkpoints, and clear failure surfaces.</li>
+              </ul>
+            </div>
+            <div class="build-card">
+              <span class="label">Project 3</span>
+              <h3>Memory-backed personal analyst</h3>
+              <ul>
+                <li>Store user preferences and durable facts outside the prompt.</li>
+                <li>Retrieve only context relevant to the current task.</li>
+                <li>Measure memory hit quality and rejection behavior on no-answer cases.</li>
+              </ul>
+            </div>
+            <div class="build-card">
+              <span class="label">Project 4</span>
+              <h3>Graph-augmented enterprise QA</h3>
+              <ul>
+                <li>Start with standard RAG, then add GraphRAG or HippoRAG only where baseline retrieval breaks.</li>
+                <li>Benchmark complex multi-hop questions separately from simple factual retrieval.</li>
+                <li>Track token cost and index-build cost alongside accuracy.</li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="footer-note">This atlas is intentionally opinionated: it prefers resources that help you build and debug real systems over resources that only explain the idea at a high level.</p>
+        </section>
+      </main>
+    </div>
+
+    <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">↑ Back to top</button>
+
+    <script>
+      const resources = [
+        {
+          id: "anthropic-building-effective-agents",
+          title: "Building Effective Agents",
+          url: "https://www.anthropic.com/engineering/building-effective-agents",
+          type: "Blog",
+          section: "Agentic AI Foundations",
+          year: 2024,
+          difficulty: "Intermediate",
+          concepts: ["workflows vs agents", "tool use", "agent loops", "augmented LLMs", "when not to use agents"],
+          importance: "Best practical starting point for deciding whether you need an agent at all.",
+          badges: ["must-read", "production"],
+          why: "It gives crisp architecture patterns and a strong bias toward the simplest system that can work, which is still the best production instinct.",
+          notes: "One of the strongest high-level pieces for separating fashionable agent claims from usable engineering patterns."
+        },
+        {
+          id: "openai-practical-guide-building-agents",
+          title: "A Practical Guide to Building Agents",
+          url: "https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf",
+          type: "Guide",
+          section: "Agentic AI Foundations",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["manager pattern", "handoffs", "tool orchestration", "multi-agent workflows", "agent design tradeoffs"],
+          importance: "Strong vendor guide with concrete orchestration patterns and readable code examples.",
+          badges: ["must-read"],
+          why: "Useful when you want production-oriented agent patterns without wading through a large SDK codebase first."
+        },
+        {
+          id: "openai-new-tools-building-agents",
+          title: "New Tools for Building Agents",
+          url: "https://openai.com/index/new-tools-for-building-agents/",
+          type: "Blog",
+          section: "Agentic AI Foundations",
+          year: 2025,
+          difficulty: "Beginner",
+          concepts: ["Responses API", "built-in tools", "agent platform primitives", "tracing", "evaluations"],
+          importance: "Clear overview of how OpenAI frames the modern agent stack.",
+          badges: ["production"],
+          why: "Good orientation for understanding the newer OpenAI runtime model and where tools, file search, and evals fit."
+        },
+        {
+          id: "openai-agents-sdk-guide",
+          title: "OpenAI Agents SDK Guide",
+          url: "https://developers.openai.com/api/docs/guides/agents",
+          type: "Docs",
+          section: "Agentic AI Foundations",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["agents in code", "tool calling", "handoffs", "sandbox agents", "stateful runtime patterns"],
+          importance: "Primary source for the OpenAI SDK model and runtime abstractions.",
+          badges: ["must-read", "production"],
+          why: "A strong entry point if you want to build agent workflows in code and understand the official runtime shape, not just the blog framing."
+        },
+        {
+          id: "google-adk-technical-overview",
+          title: "Agent Development Kit (ADK) Technical Overview",
+          url: "https://google.github.io/adk-docs/get-started/about/",
+          type: "Docs",
+          section: "Agentic AI Foundations",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["workflow agents", "tools", "callbacks", "session state", "memory", "planning"],
+          importance: "One of the clearest documents for agent primitives beyond chat plus tools.",
+          badges: ["production"],
+          why: "It explains sessions, memory, artifacts, callbacks, and workflow agents in a way that helps you reason about agent systems as software, not just prompts."
+        },
+        {
+          id: "microsoft-agent-framework-overview",
+          title: "Microsoft Agent Framework Overview",
+          url: "https://learn.microsoft.com/en-us/agent-framework/overview/",
+          type: "Docs",
+          section: "Agentic AI Foundations",
+          year: 2026,
+          difficulty: "Intermediate",
+          concepts: ["agents vs workflows", "type-safe routing", "checkpointing", "state management", "MCP"],
+          importance: "Good overview of enterprise-oriented agent orchestration and workflow control.",
+          badges: ["production"],
+          why: "Especially useful if your mental model of agents is still too tied to one-shot tool calling and not enough to workflow execution and state."
+        },
+        {
+          id: "langgraph-thinking-in-langgraph",
+          title: "Thinking in LangGraph",
+          url: "https://docs.langchain.com/oss/python/langgraph/thinking-in-langgraph",
+          type: "Docs",
+          section: "Agentic AI Foundations",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["state graphs", "nodes and edges", "context sections", "agent reasoning", "workflow design"],
+          importance: "Excellent for internalizing graph-based agent design rather than chat-loop design.",
+          badges: ["must-read", "production"],
+          why: "It helps you think in explicit state transitions and workflow nodes, which is the right abstraction once agents become long-running and multi-step."
+        },
+        {
+          id: "dspy-repo",
+          title: "DSPy",
+          url: "https://github.com/stanfordnlp/dspy",
+          type: "GitHub",
+          section: "Agentic AI Foundations",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["programming not prompting", "optimizers", "modular AI systems", "RAG optimization", "agent loops"],
+          importance: "Important shift from hand-authored prompts to compositional programs with optimization loops.",
+          badges: ["must-read", "research"],
+          why: "Read this if you want a more principled way to improve complex LM systems than tweaking prompt strings by hand."
+        },
+        {
+          id: "pydantic-ai-repo",
+          title: "PydanticAI",
+          url: "https://github.com/pydantic/pydantic-ai",
+          type: "GitHub",
+          section: "Agentic AI Foundations",
+          year: 2026,
+          difficulty: "Intermediate",
+          concepts: ["typed agents", "validation", "provider-agnostic workflows", "structured outputs", "production Python"],
+          importance: "Very strong choice when correctness and typed outputs matter.",
+          badges: ["production"],
+          why: "It is a good reminder that a lot of production agent quality comes from interface discipline and validation, not just more reasoning."
+        },
+        {
+          id: "anthropic-multi-agent-research-system",
+          title: "How We Built Our Multi-Agent Research System",
+          url: "https://www.anthropic.com/engineering/multi-agent-research-system",
+          type: "Blog",
+          section: "Production-Ready Agent Architectures",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["orchestrator-worker pattern", "parallel subagents", "memory", "citation pipeline", "coordination complexity"],
+          importance: "One of the best real-world writeups of a production multi-agent system.",
+          badges: ["must-read", "production"],
+          why: "Valuable because it covers prompt strategy, coordination problems, and reliability issues that appear only once multiple agents work in parallel."
+        },
+        {
+          id: "anthropic-writing-tools-for-agents",
+          title: "Writing Effective Tools for AI Agents",
+          url: "https://www.anthropic.com/engineering/writing-tools-for-agents",
+          type: "Blog",
+          section: "Production-Ready Agent Architectures",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["tool descriptions", "tool specs", "agent affordances", "evaluation-driven tool design", "token efficiency"],
+          importance: "Best tool-design article in this list.",
+          badges: ["must-read", "production"],
+          why: "A lot of agent failures are really interface failures; this shows how to write tools so the model can use them well."
+        },
+        {
+          id: "anthropic-code-execution-mcp",
+          title: "Code Execution with MCP: Building More Efficient Agents",
+          url: "https://www.anthropic.com/engineering/code-execution-with-mcp",
+          type: "Blog",
+          section: "Production-Ready Agent Architectures",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["MCP", "context efficiency", "tool loading", "on-demand execution", "agent performance"],
+          importance: "Strong piece on reducing context waste in tool-heavy agents.",
+          badges: ["production"],
+          why: "Useful when your agent is drowning in tool definitions and outputs instead of spending tokens on the actual task."
+        },
+        {
+          id: "anthropic-advanced-tool-use",
+          title: "Introducing Advanced Tool Use on the Claude Developer Platform",
+          url: "https://www.anthropic.com/engineering/advanced-tool-use",
+          type: "Blog",
+          section: "Production-Ready Agent Architectures",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["tool search", "large tool sets", "context window pressure", "on-demand tools", "agent scaling"],
+          importance: "Key resource for understanding large-toolbox agent design.",
+          badges: ["production"],
+          why: "It addresses a practical scaling problem: once the agent has too many tools, tool availability itself becomes a context-engineering problem."
+        },
+        {
+          id: "anthropic-effective-harnesses-long-running-agents",
+          title: "Effective Harnesses for Long-Running Agents",
+          url: "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+          type: "Blog",
+          section: "Production-Ready Agent Architectures",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["agent harnesses", "incremental progress", "context windows", "autonomous coding", "task decomposition"],
+          importance: "A high-value resource for long-horizon agent execution design.",
+          badges: ["production"],
+          why: "Great for learning how to scaffold agents that need to keep making progress across many turns, not just solve one bounded prompt."
+        },
+        {
+          id: "anthropic-claude-agent-sdk",
+          title: "Building Agents with the Claude Agent SDK",
+          url: "https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk/",
+          type: "Blog",
+          section: "Production-Ready Agent Architectures",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["agent SDK", "skills", "folder-based context", "non-coding agent use cases", "Claude runtime"],
+          importance: "Helpful for seeing how an SDK and a context-engineering model come together.",
+          badges: ["production"],
+          why: "It connects runtime design to the emerging idea that a project structure itself can become an important context surface."
+        },
+        {
+          id: "openai-agents-python-repo",
+          title: "OpenAI Agents SDK (Python)",
+          url: "https://github.com/openai/openai-agents-python",
+          type: "GitHub",
+          section: "Production-Ready Agent Architectures",
+          year: 2026,
+          difficulty: "Intermediate",
+          concepts: ["multi-agent workflows", "tools", "guardrails", "handoffs", "sandbox agents"],
+          importance: "Core implementation reference for OpenAI-style agent workflows.",
+          badges: ["must-read", "production"],
+          why: "Best used alongside the docs when you want real examples, object structure, and the exact runtime vocabulary used by the SDK."
+        },
+        {
+          id: "google-adk-multi-agent-systems",
+          title: "ADK Multi-Agent Systems",
+          url: "https://google.github.io/adk-docs/agents/multi-agents/",
+          type: "Docs",
+          section: "Production-Ready Agent Architectures",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["sequential agents", "parallel agents", "shared invocation context", "sub-agents", "workflow orchestration"],
+          importance: "Useful, concrete doc on multi-agent control flow primitives.",
+          badges: ["production"],
+          why: "It shows how orchestration can be explicit and typed rather than improvised inside a single prompt loop."
+        },
+        {
+          id: "google-adk-tools",
+          title: "Tools for Agents in ADK",
+          url: "https://google.github.io/adk-docs/tools/",
+          type: "Docs",
+          section: "Production-Ready Agent Architectures",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["tool ecosystem", "code execution", "computer use", "RAG engine", "MCP tools"],
+          importance: "Good survey of what a modern tool-enabled agent platform should expose.",
+          badges: ["production"],
+          why: "This is helpful when you want to design agents around capabilities and safety boundaries, not just around prompt text."
+        },
+        {
+          id: "microsoft-agent-framework-v1-blog",
+          title: "Microsoft Agent Framework Version 1.0",
+          url: "https://devblogs.microsoft.com/agent-framework/microsoft-agent-framework-version-1-0/",
+          type: "Blog",
+          section: "Production-Ready Agent Architectures",
+          year: 2026,
+          difficulty: "Intermediate",
+          concepts: ["production release", "graph workflows", "multi-agent orchestration", "interoperability", "agent harness integration"],
+          importance: "Strong update on how Microsoft positions production agent orchestration.",
+          badges: ["production"],
+          why: "Useful if you want to see how enterprise agent platforms think about stable APIs, interoperability, and orchestration boundaries."
+        },
+        {
+          id: "microsoft-agent-framework-repo",
+          title: "Microsoft Agent Framework",
+          url: "https://github.com/microsoft/agent-framework",
+          type: "GitHub",
+          section: "Production-Ready Agent Architectures",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["Python and .NET", "workflow builders", "state management", "multi-agent systems", "deployment"],
+          importance: "Primary code source for Microsoft’s current agent framework direction.",
+          badges: ["production"],
+          why: "Read the repo when you want concrete reference implementations, samples, and the actual evolving framework surface."
+        },
+        {
+          id: "langgraph-repo",
+          title: "LangGraph",
+          url: "https://github.com/langchain-ai/langgraph",
+          type: "GitHub",
+          section: "Production-Ready Agent Architectures",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["durable execution", "human-in-the-loop", "stateful agents", "graph runtime", "long-running workflows"],
+          importance: "One of the strongest open-source foundations for explicit stateful agent orchestration.",
+          badges: ["must-read", "production"],
+          why: "Important if you need agents that persist state, resume after failures, and behave more like applications than chat sessions."
+        },
+        {
+          id: "anthropic-contextual-retrieval",
+          title: "Contextual Retrieval",
+          url: "https://www.anthropic.com/engineering/contextual-retrieval",
+          type: "Blog",
+          section: "Advanced RAG Techniques",
+          year: 2024,
+          difficulty: "Intermediate",
+          concepts: ["contextual embeddings", "contextual BM25", "chunk enrichment", "retrieval preprocessing", "RAG accuracy"],
+          importance: "One of the most practical retrieval upgrades in this list.",
+          badges: ["must-read", "production"],
+          why: "It improves retrieval quality with a preprocessing move that is often easier to operationalize than inventing a whole new runtime."
+        },
+        {
+          id: "openai-file-search-guide",
+          title: "OpenAI File Search Guide",
+          url: "https://platform.openai.com/docs/guides/tools-file-search/",
+          type: "Docs",
+          section: "Advanced RAG Techniques",
+          year: 2025,
+          difficulty: "Beginner",
+          concepts: ["hosted retrieval", "vector stores", "result limits", "metadata filtering", "retrieval customization"],
+          importance: "Primary doc for the hosted retrieval path inside OpenAI’s tool model.",
+          badges: ["production"],
+          why: "A good reference when you want to understand how hosted retrieval changes the engineering burden compared with rolling your own vector infrastructure."
+        },
+        {
+          id: "langchain-build-rag-agent",
+          title: "Build a RAG Agent with LangChain",
+          url: "https://docs.langchain.com/oss/python/langchain/rag",
+          type: "Docs",
+          section: "Advanced RAG Techniques",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["RAG agents", "retrieval tools", "iterative search", "LLM tool loops", "citation-conscious prompting"],
+          importance: "Compact tutorial showing what an agentic RAG setup looks like in practice.",
+          badges: ["must-read"],
+          why: "Especially helpful if you want to see the jump from a single retrieval chain to a retrieval tool that an agent can call adaptively."
+        },
+        {
+          id: "langgraph-tutorials-overview",
+          title: "LangGraph Agentic RAG Tutorial",
+          url: "https://docs.langchain.com/oss/python/langgraph/agentic-rag",
+          type: "Docs",
+          section: "Advanced RAG Techniques",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["agentic RAG", "state graphs", "conditional edges", "retrieval grading", "query rewriting"],
+          importance: "High-signal official tutorial for building an adaptive RAG graph directly in LangGraph.",
+          badges: ["production"],
+          why: "A better production-facing replacement for the older tutorial index because it shows the graph structure and retrieval control loop in one concrete walkthrough."
+        },
+        {
+          id: "llamaindex-intro-rag",
+          title: "Introduction to RAG",
+          url: "https://docs.llamaindex.ai/en/stable/understanding/rag/",
+          type: "Docs",
+          section: "Advanced RAG Techniques",
+          year: 2025,
+          difficulty: "Beginner",
+          concepts: ["indexing", "retrieval", "generation", "nodes", "RAG stages"],
+          importance: "Clean conceptual map of the full RAG pipeline.",
+          badges: [],
+          why: "Good as a refresher or grounding doc before you dive into hybrid retrieval, reranking, or graph-based extensions."
+        },
+        {
+          id: "llamaindex-workflows-intro",
+          title: "Introduction to Workflows in LlamaIndex",
+          url: "https://docs.llamaindex.ai/en/stable/understanding/workflows/",
+          type: "Docs",
+          section: "Advanced RAG Techniques",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["workflow orchestration", "reflection", "multi-strategy RAG", "data flow control", "agentic applications"],
+          importance: "Strong document for seeing how multiple RAG strategies can be orchestrated together.",
+          badges: ["production"],
+          why: "Useful when you want to build a pipeline that can branch, reflect, or compare retrieval paths rather than always do one fixed lookup."
+        },
+        {
+          id: "llamaindex-rag-workflow-reranking",
+          title: "RAG Workflow with Reranking",
+          url: "https://docs.llamaindex.ai/en/stable/examples/workflow/rag/",
+          type: "Docs",
+          section: "Advanced RAG Techniques",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["reranking", "workflow steps", "retriever events", "response synthesis", "compact-and-refine"],
+          importance: "Practical code-driven example of a more mature RAG pipeline.",
+          badges: ["must-read", "production"],
+          why: "Worth building because it demonstrates where reranking and workflow control live in a realistic RAG implementation."
+        },
+        {
+          id: "llamaindex-agentic-strategies",
+          title: "Agentic Strategies in LlamaIndex",
+          url: "https://docs.llamaindex.ai/en/stable/optimizing/agentic_strategies/agentic_strategies/",
+          type: "Docs",
+          section: "Advanced RAG Techniques",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["function agent retrieval", "agentic retrieval", "decision automation", "RAG optimization", "tool choice"],
+          importance: "Good bridge between standard RAG and agent-enabled retrieval behaviors.",
+          badges: ["production"],
+          why: "It helps you understand how to layer agent decisions on top of an existing RAG workflow instead of rebuilding everything."
+        },
+        {
+          id: "llamaindex-controllable-agents-rag",
+          title: "Controllable Agents for RAG",
+          url: "https://docs.llamaindex.ai/en/v0.10.18/examples/agent/agent_runner/agent_runner_rag_controllable.html",
+          type: "Docs",
+          section: "Advanced RAG Techniques",
+          year: 2024,
+          difficulty: "Advanced",
+          concepts: ["controllable agents", "tool routing", "document-specific tools", "RAG over multiple sources", "agent runner"],
+          importance: "Helpful example of turning documents into agent-callable retrieval tools.",
+          badges: ["production"],
+          why: "This becomes relevant when one retriever is not enough and you need the agent to choose between retrieval tools explicitly."
+        },
+        {
+          id: "microsoft-graphrag-blog",
+          title: "GraphRAG: New Tool for Complex Data Discovery Now on GitHub",
+          url: "https://www.microsoft.com/en-us/research/blog/graphrag-new-tool-for-complex-data-discovery-now-on-github/",
+          type: "Blog",
+          section: "Advanced RAG Techniques",
+          year: 2024,
+          difficulty: "Intermediate",
+          concepts: ["graph-based RAG", "private data discovery", "structured retrieval", "response generation", "Azure accelerator"],
+          importance: "Best short official introduction to what GraphRAG is trying to solve.",
+          badges: ["must-read", "research"],
+          why: "Use this to understand the problem framing before you dive into the heavier GraphRAG repo and prompt-tuning details."
+        },
+        {
+          id: "microsoft-graphrag-repo",
+          title: "GraphRAG",
+          url: "https://github.com/microsoft/graphrag",
+          type: "GitHub",
+          section: "Advanced RAG Techniques",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["graph extraction", "indexing pipeline", "prompt tuning", "knowledge graphs", "narrative data"],
+          importance: "The main open-source implementation for graph-based enterprise-style RAG.",
+          badges: ["must-read", "research"],
+          why: "Important if you need deeper thematic or relational discovery, but also worth studying for its cost and prompt-tuning caveats."
+        },
+        {
+          id: "qdrant-hybrid-search-reranking",
+          title: "Qdrant Hybrid Search with Reranking",
+          url: "https://qdrant.tech/documentation/advanced-tutorials/reranking-hybrid-search/",
+          type: "Docs",
+          section: "Advanced RAG Techniques",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["dense retrieval", "sparse retrieval", "late interaction", "ColBERT", "prefetch queries"],
+          importance: "One of the strongest practical guides for modern multi-stage retrieval.",
+          badges: ["must-read", "production"],
+          why: "Excellent if you want to build a retrieval stack that performs better than plain vector search without becoming unreadable."
+        },
+        {
+          id: "anthropic-effective-context-engineering",
+          title: "Effective Context Engineering for AI Agents",
+          url: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents/",
+          type: "Blog",
+          section: "Context Engineering & Memory Systems",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["context curation", "tool outputs", "memory", "context compression", "agent steerability"],
+          importance: "The defining conceptual piece for modern context engineering.",
+          badges: ["must-read", "production"],
+          why: "This is the clearest argument for why prompt engineering is no longer enough once agents operate over time and across tools."
+        },
+        {
+          id: "pinecone-context-engineering",
+          title: "What Is Context Engineering?",
+          url: "https://www.pinecone.io/learn/context-engineering/",
+          type: "Blog",
+          section: "Context Engineering & Memory Systems",
+          year: 2026,
+          difficulty: "Beginner",
+          concepts: ["memory layers", "tool use", "external context", "prompt orchestration", "retrieval context"],
+          importance: "A readable complement to Anthropic’s more formal framing.",
+          badges: [],
+          why: "Useful if you want a simpler explanation of context engineering before moving into memory systems and tool-selection repos."
+        },
+        {
+          id: "langgraph-context-engineering-repo",
+          title: "LangGraph Context Engineering",
+          url: "https://github.com/langchain-ai/context_engineering",
+          type: "GitHub",
+          section: "Context Engineering & Memory Systems",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["context selection", "memory retrieval", "semantic tool search", "compression", "token optimization"],
+          importance: "One of the best hands-on repos for context engineering workflows.",
+          badges: ["must-read", "production"],
+          why: "It turns context engineering from a slogan into concrete notebooks around selection, retrieval, and compression."
+        },
+        {
+          id: "anthropic-context-management",
+          title: "Managing Context on the Claude Developer Platform",
+          url: "https://www.anthropic.com/news/context-management",
+          type: "Blog",
+          section: "Context Engineering & Memory Systems",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["context editing", "memory tool", "stale tool results", "long-running tasks", "token limits"],
+          importance: "Good applied companion to the broader context-engineering article.",
+          badges: ["production"],
+          why: "Helpful when you want to see how context editing and memory become product features rather than abstract architectural advice."
+        },
+        {
+          id: "anthropic-agent-skills",
+          title: "Equipping Agents for the Real World with Agent Skills",
+          url: "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills",
+          type: "Blog",
+          section: "Context Engineering & Memory Systems",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["skills", "structured guidance", "tooling via files", "reusable agent capabilities", "context packaging"],
+          importance: "Shows how reusable agent capabilities can live outside a single monolithic prompt.",
+          badges: ["production"],
+          why: "Good resource if you want portable context and instruction bundles that let agents pick up richer behaviors without prompt bloat."
+        },
+        {
+          id: "google-adk-memory",
+          title: "ADK Memory",
+          url: "https://google.github.io/adk-docs/sessions/memory/",
+          type: "Docs",
+          section: "Context Engineering & Memory Systems",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["long-term memory", "preload memory", "load memory", "memory service", "session ingestion"],
+          importance: "Clear reference for how a major SDK separates session state from persistent memory.",
+          badges: ["production"],
+          why: "Useful because it makes the lifecycle of memory explicit: ingest, search, retrieve, and use inside the agent loop."
+        },
+        {
+          id: "mem0-repo",
+          title: "Mem0",
+          url: "https://github.com/mem0ai/mem0",
+          type: "GitHub",
+          section: "Context Engineering & Memory Systems",
+          year: 2026,
+          difficulty: "Intermediate",
+          concepts: ["long-term memory", "memory extraction", "hybrid search", "graph memory", "latency benchmarks"],
+          importance: "One of the most active open-source memory layers for agents.",
+          badges: ["must-read", "production"],
+          why: "Good for studying how memory storage, retrieval, benchmark reporting, and operational latency come together in a productized stack."
+        },
+        {
+          id: "mem0-memory-benchmarks",
+          title: "Memory Benchmarks",
+          url: "https://github.com/mem0ai/memory-benchmarks",
+          type: "GitHub",
+          section: "Context Engineering & Memory Systems",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["LOCOMO", "LongMemEval", "BEAM", "memory recall", "retrieval accuracy"],
+          importance: "Strong benchmark repo for memory-augmented systems.",
+          badges: ["production", "research"],
+          why: "Memory systems are hard to compare by intuition alone; this gives you a real benchmark harness and dataset framing."
+        },
+        {
+          id: "openai-tools-guide",
+          title: "OpenAI Tools Guide",
+          url: "https://platform.openai.com/docs/guides/tools",
+          type: "Docs",
+          section: "Context Engineering & Memory Systems",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["web search", "file search", "function calling", "remote MCP", "tool invocation"],
+          importance: "Primary source for the tool model behind the Responses API.",
+          badges: ["production"],
+          why: "Important because context engineering and agent design both depend on understanding what tools are available and how the model can decide to use them."
+        },
+        {
+          id: "langgraph-101-repo",
+          title: "LangGraph 101",
+          url: "https://github.com/langchain-ai/langgraph-101",
+          type: "GitHub",
+          section: "End-to-End Projects (Code Repos)",
+          year: 2026,
+          difficulty: "Intermediate",
+          concepts: ["foundational notebooks", "state graphs", "agent basics", "learning repo", "guided examples"],
+          importance: "Best first repo to clone if you want to learn LangGraph by doing.",
+          badges: ["must-read"],
+          why: "It strips away a lot of noise and gives you a cleaner path into graph-based agent thinking than a giant production repo."
+        },
+        {
+          id: "google-adk-python-repo",
+          title: "ADK Python",
+          url: "https://github.com/google/adk-python",
+          type: "GitHub",
+          section: "End-to-End Projects (Code Repos)",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["Python toolkit", "evaluation", "deployment", "sandbox code execution", "services"],
+          importance: "The main codebase for teams choosing ADK.",
+          badges: ["production"],
+          why: "Best when you want the actual implementation surface, samples, and current features rather than just the documentation view."
+        },
+        {
+          id: "llamaindex-repo",
+          title: "LlamaIndex OSS",
+          url: "https://github.com/run-llama/llama_index",
+          type: "GitHub",
+          section: "End-to-End Projects (Code Repos)",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["agentic applications", "indexes", "workflows", "RAG", "data connectors"],
+          importance: "Broad and capable repo for data-heavy agent systems.",
+          badges: ["production"],
+          why: "Worth cloning when you want many concrete examples spanning ingestion, retrieval, agents, and evaluation in one ecosystem."
+        },
+        {
+          id: "aiopslab-repo",
+          title: "AIOpsLab",
+          url: "https://github.com/microsoft/AIOpsLab",
+          type: "GitHub",
+          section: "End-to-End Projects (Code Repos)",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["benchmark environments", "fault injection", "telemetry", "AgentOps", "autonomous clouds"],
+          importance: "Rare example of an end-to-end benchmark environment for operational agents.",
+          badges: ["must-read", "research"],
+          why: "Extremely valuable if you care about agent evaluation in realistic environments rather than toy grading tasks."
+        },
+        {
+          id: "langgraph-cua-py-repo",
+          title: "LangGraph CUA (Python)",
+          url: "https://github.com/langchain-ai/langgraph-cua-py",
+          type: "GitHub",
+          section: "End-to-End Projects (Code Repos)",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["computer use agents", "browser interaction", "GUI agents", "LangGraph runtime", "tool orchestration"],
+          importance: "Concrete implementation for computer-use-style agents.",
+          badges: ["production"],
+          why: "A strong reference if you want to understand how agent orchestration changes when the environment is a UI instead of a pure API layer."
+        },
+        {
+          id: "lightrag-repo",
+          title: "LightRAG",
+          url: "https://github.com/HKUDS/LightRAG",
+          type: "GitHub",
+          section: "End-to-End Projects (Code Repos)",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["graph-enhanced retrieval", "knowledge extraction", "tracing", "evaluation", "simple GraphRAG alternative"],
+          importance: "Good repo for teams exploring graph-style retrieval without starting from the heaviest option.",
+          badges: ["production", "research"],
+          why: "Worth building with if GraphRAG feels too expensive or conceptually heavy for your first graph-based retrieval experiment."
+        },
+        {
+          id: "hipporag-repo",
+          title: "HippoRAG",
+          url: "https://github.com/OSU-NLP-Group/HippoRAG",
+          type: "GitHub",
+          section: "End-to-End Projects (Code Repos)",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["knowledge graphs", "Personalized PageRank", "long-term memory", "associative retrieval", "continual knowledge integration"],
+          importance: "Important codebase for memory-like retrieval research.",
+          badges: ["research"],
+          why: "Useful if you want to push past standard dense retrieval and study retrieval as an associative memory problem."
+        },
+        {
+          id: "self-rag-repo",
+          title: "SELF-RAG",
+          url: "https://github.com/AkariAsai/self-rag",
+          type: "GitHub",
+          section: "End-to-End Projects (Code Repos)",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["reflection tokens", "adaptive retrieval", "self-critique", "training code", "inference control"],
+          importance: "Canonical code release for one of the most influential adaptive RAG ideas.",
+          badges: ["research"],
+          why: "Best treated as a research implementation to study carefully rather than a drop-in production pattern."
+        },
+        {
+          id: "anthropic-demystifying-evals",
+          title: "Demystifying Evals for AI Agents",
+          url: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          type: "Blog",
+          section: "Evaluation, Monitoring & Debugging",
+          year: 2026,
+          difficulty: "Intermediate",
+          concepts: ["multi-turn evals", "graders", "environment-based grading", "agent loops", "success criteria"],
+          importance: "One of the best readable treatments of agent evaluation design.",
+          badges: ["must-read", "production"],
+          why: "Important because it makes clear that agent evaluation is about trajectories and environments, not just final text answers."
+        },
+        {
+          id: "openai-agent-evals",
+          title: "OpenAI Agent Evals",
+          url: "https://platform.openai.com/docs/guides/agent-evals",
+          type: "Docs",
+          section: "Evaluation, Monitoring & Debugging",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["reproducible evaluation", "trace grading", "datasets", "workflow-level errors", "prompt optimization"],
+          importance: "Primary doc for OpenAI’s current evaluation stack.",
+          badges: ["production"],
+          why: "Read this when you want to understand how modern hosted agent platforms are turning evals into a continuous improvement loop."
+        },
+        {
+          id: "google-adk-why-evaluate-agents",
+          title: "Why Evaluate Agents",
+          url: "https://adk.dev/evaluate/",
+          type: "Docs",
+          section: "Evaluation, Monitoring & Debugging",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["trajectory evaluation", "expected intermediates", "proof-of-concept to production", "agent state", "evaluation sets"],
+          importance: "Clear explanation of why agent evaluation is different from plain LLM output evaluation.",
+          badges: ["production"],
+          why: "Very useful for understanding that you often need to compare actual trajectories against ideal ones, not just grade the answer."
+        },
+        {
+          id: "phoenix-repo",
+          title: "Arize Phoenix",
+          url: "https://github.com/Arize-ai/phoenix",
+          type: "GitHub",
+          section: "Evaluation, Monitoring & Debugging",
+          year: 2026,
+          difficulty: "Intermediate",
+          concepts: ["tracing", "OpenTelemetry", "evaluation", "datasets", "experiments", "retrieval evals"],
+          importance: "Top open-source observability and evaluation project in the current agent stack.",
+          badges: ["must-read", "production"],
+          why: "You need something like this once agents become hard to debug with logs and print statements."
+        },
+        {
+          id: "arize-trace-level-evals",
+          title: "Trace-Level LLM Evaluations with Arize AX",
+          url: "https://arize.com/blog/guide-to-trace-level-llm-evaluations-with-arize-ax/",
+          type: "Blog",
+          section: "Evaluation, Monitoring & Debugging",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["trace-level grading", "span vs trace evals", "end-to-end reliability", "agent workflows", "evaluation granularity"],
+          importance: "Strong resource for shifting from component-level evals to end-to-end workflow evals.",
+          badges: ["production"],
+          why: "Helpful because many teams over-index on per-call correctness and under-measure whether the whole workflow actually succeeded."
+        },
+        {
+          id: "openinference-repo",
+          title: "OpenInference",
+          url: "https://github.com/Arize-ai/openinference",
+          type: "GitHub",
+          section: "Evaluation, Monitoring & Debugging",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["instrumentation", "OpenTelemetry", "framework-agnostic tracing", "OpenAI", "LangChain", "ADK"],
+          importance: "Core open instrumentation layer for portable AI tracing.",
+          badges: ["production"],
+          why: "Important if you want vendor-neutral observability and the ability to instrument multiple frameworks consistently."
+        },
+        {
+          id: "ragas-docs",
+          title: "Ragas Documentation",
+          url: "https://docs.ragas.io/en/stable/",
+          type: "Docs",
+          section: "Evaluation, Monitoring & Debugging",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["RAG evaluation", "metrics", "testset generation", "experiments", "LLM application evaluation"],
+          importance: "Still one of the most central references for RAG evaluation workflows.",
+          badges: ["must-read", "production"],
+          why: "If you build RAG seriously, you need to understand the metric vocabulary and dataset generation patterns this ecosystem popularized."
+        },
+        {
+          id: "ragas-evaluate-improve-rag",
+          title: "Evaluate and Improve a RAG App",
+          url: "https://docs.ragas.io/en/stable/howtos/applications/evaluate-and-improve-rag/",
+          type: "Docs",
+          section: "Evaluation, Monitoring & Debugging",
+          year: 2025,
+          difficulty: "Intermediate",
+          concepts: ["experiments", "row-level evaluation", "correctness metrics", "iteration loop", "application tuning"],
+          importance: "A practical bridge from metric theory to a working evaluation experiment.",
+          badges: ["must-read"],
+          why: "Useful when you want to wire evals into a concrete RAG application rather than only read about the metric definitions."
+        },
+        {
+          id: "deepeval-repo",
+          title: "DeepEval",
+          url: "https://github.com/confident-ai/deepeval",
+          type: "GitHub",
+          section: "Evaluation, Monitoring & Debugging",
+          year: 2026,
+          difficulty: "Intermediate",
+          concepts: ["agent metrics", "RAG metrics", "CI integration", "synthetic datasets", "prompt optimization"],
+          importance: "Strong open-source evaluation framework that covers both agents and RAG.",
+          badges: ["production"],
+          why: "Worth using when you want pytest-like evaluation habits for LLM systems and a broad set of off-the-shelf metrics."
+        },
+        {
+          id: "microsoft-agentrx-blog",
+          title: "Systematic Debugging for AI Agents: Introducing AgentRx",
+          url: "https://www.microsoft.com/en-us/research/blog/systematic-debugging-for-ai-agents-introducing-the-agentrx-framework/",
+          type: "Blog",
+          section: "Evaluation, Monitoring & Debugging",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["trajectory diagnosis", "failure attribution", "critical failure step", "agent debugging", "execution traces"],
+          importance: "One of the better recent resources on debugging failed agent runs systematically.",
+          badges: ["research"],
+          why: "A good step forward from generic observability because it asks which exact step broke the run, not only what the trace looked like."
+        },
+        {
+          id: "self-rag-paper",
+          title: "Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",
+          url: "https://arxiv.org/abs/2310.11511",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2023,
+          difficulty: "Advanced",
+          concepts: ["reflection tokens", "adaptive retrieval", "self-critique", "controllable inference", "factuality"],
+          importance: "Foundational older exception that still shapes adaptive RAG thinking.",
+          badges: ["must-read", "research"],
+          why: "It is older than the main date window, but still essential because so many later adaptive retrieval ideas are reacting to or extending it.",
+          notes: "Included intentionally as a foundational exception because it remains central to modern advanced RAG discussions."
+        },
+        {
+          id: "crag-paper",
+          title: "Corrective Retrieval Augmented Generation",
+          url: "https://arxiv.org/abs/2401.15884",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2024,
+          difficulty: "Advanced",
+          concepts: ["retrieval evaluator", "corrective actions", "web search fallback", "decompose-then-recompose", "plug-and-play RAG"],
+          importance: "Key paper for robustness-oriented RAG design.",
+          badges: ["must-read", "research"],
+          why: "Important because it frames retrieval quality itself as something the system should evaluate before generation proceeds."
+        },
+        {
+          id: "hipporag-paper",
+          title: "HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models",
+          url: "https://arxiv.org/abs/2405.14831",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2024,
+          difficulty: "Advanced",
+          concepts: ["associative memory", "knowledge graphs", "Personalized PageRank", "long-term memory", "retrieval reasoning"],
+          importance: "Major paper for memory-like retrieval beyond standard vector search.",
+          badges: ["research"],
+          why: "Strong read if you want to understand retrieval as an organized memory system rather than a similarity lookup."
+        },
+        {
+          id: "lightrag-paper",
+          title: "LightRAG: Simple and Fast Retrieval-Augmented Generation",
+          url: "https://arxiv.org/abs/2410.05779",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2024,
+          difficulty: "Advanced",
+          concepts: ["simple GraphRAG alternative", "speed", "graph extraction", "retrieval efficiency", "practical deployment"],
+          importance: "Useful paper for teams who want graph-enhanced retrieval without the heaviest pipeline.",
+          badges: ["research"],
+          why: "Worth reading if GraphRAG feels promising but too operationally expensive for your expected gains."
+        },
+        {
+          id: "mem0-paper",
+          title: "Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory",
+          url: "https://arxiv.org/abs/2504.19413",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["memory extraction", "consolidation", "graph memory", "latency reduction", "long-term dialogue consistency"],
+          importance: "Important paper at the intersection of memory systems and production constraints.",
+          badges: ["production", "research"],
+          why: "It is notable for reporting both quality gains and real deployment metrics like token and latency savings."
+        },
+        {
+          id: "from-rag-to-memory-paper",
+          title: "From RAG to Memory: Non-Parametric Continual Learning for Large Language Models",
+          url: "https://arxiv.org/abs/2502.14802",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["continual learning", "non-parametric memory", "HippoRAG 2", "associative recall", "knowledge integration"],
+          importance: "Important evolution of memory-oriented retrieval thinking.",
+          badges: ["research"],
+          why: "Strong follow-on paper if you want to understand how retrieval systems are being pushed toward more human-memory-like behavior."
+        },
+        {
+          id: "a-mem-paper",
+          title: "A-MEM: Agentic Memory for LLM Agents",
+          url: "https://arxiv.org/abs/2502.12110",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["agentic memory", "zettelkasten-inspired structure", "memory organization", "context-aware retrieval", "experience reuse"],
+          importance: "Strong paper for structured memory organization ideas.",
+          badges: ["research"],
+          why: "Useful if you want to think beyond flat memory stores toward more compositional and organized memory representations."
+        },
+        {
+          id: "agentic-memory-paper",
+          title: "Agentic Memory: Learning Unified Long-Term and Short-Term Memory Management for Large Language Model Agents",
+          url: "https://arxiv.org/abs/2601.01885",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["LTM + STM management", "policy learning", "memory control", "long-horizon reasoning", "context limits"],
+          importance: "Useful paper for unified memory management rather than ad hoc memory retrieval.",
+          badges: ["research"],
+          why: "Important if you want to see where memory system research is heading beyond handcrafted retrieval heuristics."
+        },
+        {
+          id: "xrag-paper",
+          title: "XRAG: eXamining the Core",
+          url: "https://arxiv.org/abs/2412.15529",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2024,
+          difficulty: "Advanced",
+          concepts: ["advanced RAG benchmarking", "pre-retrieval", "post-retrieval", "diagnostic testing", "failure analysis"],
+          importance: "Excellent paper if you care about where advanced RAG systems actually fail.",
+          badges: ["must-read", "research"],
+          why: "Helpful because it decomposes advanced RAG into modules and measures the failure points instead of treating the stack as a black box."
+        },
+        {
+          id: "bright-paper",
+          title: "BRIGHT: A Realistic and Challenging Benchmark for Reasoning-Intensive Retrieval",
+          url: "https://arxiv.org/pdf/2407.12883",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2024,
+          difficulty: "Advanced",
+          concepts: ["retrieval benchmark", "reasoning-intensive queries", "nDCG", "query rewriting", "hard retrieval tasks"],
+          importance: "Important benchmark paper for anyone who thinks standard retrieval benchmarks are too easy.",
+          badges: ["research"],
+          why: "It provides a more realistic view of hard retrieval, which matters a lot for advanced RAG design."
+        },
+        {
+          id: "aiopslab-paper",
+          title: "AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds",
+          url: "https://arxiv.org/abs/2501.06706",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["AgentOps", "benchmark environments", "fault injection", "telemetry", "cloud operations"],
+          importance: "High-value benchmark-and-systems paper for realistic agent evaluation.",
+          badges: ["research"],
+          why: "Strong read if you want evaluation environments that feel operational and stateful rather than static or synthetic."
+        },
+        {
+          id: "agent-lightning-paper",
+          title: "Agent Lightning: Train ANY AI Agents with Reinforcement Learning",
+          url: "https://arxiv.org/abs/2508.03680",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2025,
+          difficulty: "Advanced",
+          concepts: ["agent RL", "training-agent disaggregation", "trajectory decomposition", "credit assignment", "agent finetuning"],
+          importance: "A major recent direction for turning agent traces into training data.",
+          badges: ["research"],
+          why: "Especially useful if you think the next frontier is not just better prompting, but better learning from agent trajectories."
+        },
+        {
+          id: "agenttrace-paper",
+          title: "AgentTrace: A Structured Logging Framework for Agent System Observability",
+          url: "https://arxiv.org/abs/2602.10133",
+          type: "Paper",
+          section: "Research Papers",
+          year: 2026,
+          difficulty: "Advanced",
+          concepts: ["structured logs", "operational logs", "cognitive logs", "contextual telemetry", "security observability"],
+          importance: "A strong recent paper on observability as a first-class layer for agent security and debugging.",
+          badges: ["research"],
+          why: "Worth reading if you want a deeper, more formal view of how traces and logs can support trustworthy agent deployment."
+        }
+      ];
+
+      const roadmap = [
+        {
+          title: "Read first",
+          description: "Get the mental model right before you choose a framework or overbuild a loop.",
+          ids: [
+            "anthropic-building-effective-agents",
+            "openai-practical-guide-building-agents",
+            "anthropic-effective-context-engineering",
+            "openai-agents-sdk-guide",
+            "google-adk-technical-overview"
+          ]
+        },
+        {
+          title: "Build first",
+          description: "Hands-on starting points that turn theory into a working agent or RAG system quickly.",
+          ids: [
+            "langgraph-101-repo",
+            "langchain-build-rag-agent",
+            "qdrant-hybrid-search-reranking",
+            "google-adk-python-repo",
+            "openai-agents-python-repo"
+          ]
+        },
+        {
+          title: "Production hardening next",
+          description: "Where systems move from clever demos to durable products.",
+          ids: [
+            "anthropic-writing-tools-for-agents",
+            "anthropic-effective-harnesses-long-running-agents",
+            "anthropic-demystifying-evals",
+            "phoenix-repo",
+            "ragas-docs"
+          ]
+        },
+        {
+          title: "Research-depth next",
+          description: "Read these once you want to understand the moving frontier behind the current industry defaults.",
+          ids: [
+            "crag-paper",
+            "hipporag-paper",
+            "xrag-paper",
+            "agent-lightning-paper",
+            "agenttrace-paper"
+          ]
+        }
+      ];
+
+      const sections = [
+        "Agentic AI Foundations",
+        "Production-Ready Agent Architectures",
+        "Advanced RAG Techniques",
+        "Context Engineering & Memory Systems",
+        "End-to-End Projects (Code Repos)",
+        "Evaluation, Monitoring & Debugging",
+        "Research Papers"
+      ];
+
+      const types = ["All types", "Blog", "Docs", "GitHub", "Guide", "Paper"];
+      const difficulties = ["All levels", "Beginner", "Intermediate", "Advanced"];
+      const activeTags = new Set();
+      const expandedConcepts = new Set();
+
+      const searchInput = document.getElementById("searchInput");
+      const sectionFilter = document.getElementById("sectionFilter");
+      const typeFilter = document.getElementById("typeFilter");
+      const difficultyFilter = document.getElementById("difficultyFilter");
+      const recentOnly = document.getElementById("recentOnly");
+      const clearFilters = document.getElementById("clearFilters");
+      const filterSummary = document.getElementById("filterSummary");
+      const filterState = document.getElementById("filterState");
+      const roadmapGrid = document.getElementById("roadmapGrid");
+      const backToTop = document.getElementById("backToTop");
+
+      function fillSelect(select, firstLabel, values) {
+        select.innerHTML = "";
+        const allOption = document.createElement("option");
+        allOption.value = "";
+        allOption.textContent = firstLabel;
+        select.appendChild(allOption);
+        values.forEach((value) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = value;
+          select.appendChild(option);
+        });
+      }
+
+      function getDomain(url) {
+        try {
+          const hostname = new URL(url).hostname.replace(/^www\./, "");
+          return hostname;
+        } catch (error) {
+          return "external";
+        }
+      }
+
+      function badgeMeta(badge) {
+        if (badge === "must-read") {
+          return { label: "⭐ Must Read / Must Build", className: "must-read" };
+        }
+        if (badge === "production") {
+          return { label: "🚀 Production-Ready Pattern", className: "production" };
+        }
+        return { label: "🔬 Research-Level", className: "research" };
+      }
+
+      function matchesFilters(resource) {
+        const query = searchInput.value.trim().toLowerCase();
+        const text = [
+          resource.title,
+          resource.type,
+          resource.section,
+          resource.difficulty,
+          resource.importance,
+          resource.why,
+          resource.notes || "",
+          resource.concepts.join(" ")
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        if (query && !text.includes(query)) {
+          return false;
+        }
+
+        if (sectionFilter.value && resource.section !== sectionFilter.value) {
+          return false;
+        }
+
+        if (typeFilter.value && resource.type !== typeFilter.value) {
+          return false;
+        }
+
+        if (difficultyFilter.value && resource.difficulty !== difficultyFilter.value) {
+          return false;
+        }
+
+        if (recentOnly.checked && resource.year < 2024) {
+          return false;
+        }
+
+        if (activeTags.size > 0) {
+          for (const tag of activeTags) {
+            if (!resource.badges.includes(tag)) {
+              return false;
+            }
+          }
+        }
+
+        return true;
+      }
+
+      function createConceptRow(resource) {
+        const conceptLimit = 4;
+        const expanded = expandedConcepts.has(resource.id);
+        const visibleConcepts = expanded ? resource.concepts : resource.concepts.slice(0, conceptLimit);
+        const hiddenCount = resource.concepts.length - visibleConcepts.length;
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "concept-row";
+
+        visibleConcepts.forEach((concept) => {
+          const chip = document.createElement("span");
+          chip.className = "concept-chip";
+          chip.textContent = concept;
+          wrapper.appendChild(chip);
+        });
+
+        if (resource.concepts.length > conceptLimit) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "concept-toggle";
+          button.dataset.expandId = resource.id;
+          button.textContent = expanded ? "Show less" : `+${hiddenCount} more`;
+          wrapper.appendChild(button);
+        }
+
+        return wrapper;
+      }
+
+      function createResourceCard(resource) {
+        const article = document.createElement("article");
+        article.className = "resource-card";
+        article.id = `resource-${resource.id}`;
+
+        const title = document.createElement("h3");
+        title.textContent = resource.title;
+
+        const metaRow = document.createElement("div");
+        metaRow.className = "resource-meta";
+        [
+          resource.type,
+          String(resource.year),
+          resource.difficulty,
+          getDomain(resource.url)
+        ].forEach((item, index) => {
+          const meta = document.createElement("span");
+          meta.className = index === 3 ? "domain-chip" : "meta-chip";
+          meta.textContent = item;
+          metaRow.appendChild(meta);
+        });
+
+        const badgeRow = document.createElement("div");
+        badgeRow.className = "badge-row";
+        resource.badges.forEach((badge) => {
+          const badgeInfo = badgeMeta(badge);
+          const span = document.createElement("span");
+          span.className = `badge-chip ${badgeInfo.className}`;
+          span.textContent = badgeInfo.label;
+          badgeRow.appendChild(span);
+        });
+
+        const importance = document.createElement("p");
+        importance.innerHTML = `<span class="label">Key value</span>${resource.importance}`;
+
+        const why = document.createElement("p");
+        why.innerHTML = `<span class="label">Why it matters</span>${resource.why}`;
+
+        const conceptsBlock = document.createElement("div");
+        const conceptsLabel = document.createElement("span");
+        conceptsLabel.className = "label";
+        conceptsLabel.textContent = "Key concepts covered";
+        conceptsBlock.appendChild(conceptsLabel);
+        conceptsBlock.appendChild(createConceptRow(resource));
+
+        article.appendChild(title);
+        article.appendChild(metaRow);
+        if (resource.badges.length > 0) {
+          article.appendChild(badgeRow);
+        }
+        article.appendChild(importance);
+        article.appendChild(why);
+        article.appendChild(conceptsBlock);
+
+        if (resource.notes) {
+          const note = document.createElement("div");
+          note.className = "note-box";
+          note.innerHTML = `<span class="label" style="margin-bottom: 6px;">Notes / caveats</span>${resource.notes}`;
+          article.appendChild(note);
+        }
+
+        const actions = document.createElement("div");
+        actions.className = "resource-actions";
+
+        const primaryLink = document.createElement("a");
+        primaryLink.className = "resource-link";
+        primaryLink.href = resource.url;
+        primaryLink.target = "_blank";
+        primaryLink.rel = "noopener noreferrer";
+        primaryLink.textContent = "Open resource ↗";
+
+        const secondaryLink = document.createElement("a");
+        secondaryLink.className = "secondary-link";
+        secondaryLink.href = `#resource-${resource.id}`;
+        secondaryLink.textContent = "Copyable anchor";
+
+        actions.appendChild(primaryLink);
+        actions.appendChild(secondaryLink);
+        article.appendChild(actions);
+
+        return article;
+      }
+
+      function renderRoadmap() {
+        roadmapGrid.innerHTML = "";
+        roadmap.forEach((bucket) => {
+          const card = document.createElement("div");
+          card.className = "roadmap-card";
+
+          const heading = document.createElement("h3");
+          heading.textContent = bucket.title;
+
+          const description = document.createElement("p");
+          description.textContent = bucket.description;
+
+          const list = document.createElement("ul");
+          bucket.ids
+            .map((id) => resources.find((resource) => resource.id === id))
+            .filter(Boolean)
+            .forEach((resource) => {
+              const item = document.createElement("li");
+              const link = document.createElement("a");
+              link.href = `#resource-${resource.id}`;
+              link.textContent = resource.title;
+              item.appendChild(link);
+              list.appendChild(item);
+            });
+
+          card.appendChild(heading);
+          card.appendChild(description);
+          card.appendChild(list);
+          roadmapGrid.appendChild(card);
+        });
+      }
+
+      function renderResources() {
+        const filtered = resources.filter(matchesFilters);
+
+        sections.forEach((section) => {
+          const container = document.querySelector(`[data-resource-section="${section}"]`);
+          const cardSection = container.closest(".section-card");
+          const items = filtered.filter((resource) => resource.section === section);
+
+          container.innerHTML = "";
+          if (items.length === 0) {
+            cardSection.style.display = "none";
+          } else {
+            cardSection.style.display = "";
+            items.forEach((resource) => container.appendChild(createResourceCard(resource)));
+          }
+
+          const countNode = document.querySelector(`[data-section-count="${section}"]`);
+          countNode.textContent = `${items.length} shown`;
+        });
+
+        filterSummary.textContent = `Showing ${filtered.length} of ${resources.length} resources.`;
+
+        const stateParts = [
+          sectionFilter.value || "all sections",
+          typeFilter.value || "all types",
+          difficultyFilter.value || "all levels"
+        ];
+        if (recentOnly.checked) {
+          stateParts.push("2024–2026 only");
+        }
+        if (activeTags.size > 0) {
+          stateParts.push(`tags: ${Array.from(activeTags).join(", ")}`);
+        }
+        if (searchInput.value.trim()) {
+          stateParts.push(`search: "${searchInput.value.trim()}"`);
+        }
+        filterState.textContent = stateParts.join(" • ");
+
+        const visibleSections = sections.filter((section) =>
+          filtered.some((resource) => resource.section === section)
+        );
+
+        if (visibleSections.length === 0) {
+          const firstSection = document.querySelector(".section-stack");
+          if (!document.getElementById("emptyState")) {
+            const empty = document.createElement("div");
+            empty.className = "empty-state";
+            empty.id = "emptyState";
+            empty.textContent = "No resources match the current filter set. Clear one or two filters and try again.";
+            firstSection.prepend(empty);
+          }
+        } else {
+          const empty = document.getElementById("emptyState");
+          if (empty) {
+            empty.remove();
+          }
+        }
+      }
+
+      function setStats() {
+        const recentCount = resources.filter((resource) => resource.year >= 2024).length;
+        const primaryCount = resources.filter((resource) =>
+          ["Blog", "Docs", "GitHub", "Guide", "Paper"].includes(resource.type)
+        ).length;
+
+        document.getElementById("stat-total").textContent = String(resources.length);
+        document.getElementById("stat-recent").textContent = String(recentCount);
+        document.getElementById("stat-primary").textContent = String(primaryCount);
+      }
+
+      function handleTagToggle(event) {
+        const tag = event.currentTarget.dataset.tag;
+        if (activeTags.has(tag)) {
+          activeTags.delete(tag);
+          event.currentTarget.setAttribute("aria-pressed", "false");
+        } else {
+          activeTags.add(tag);
+          event.currentTarget.setAttribute("aria-pressed", "true");
+        }
+        renderResources();
+      }
+
+      fillSelect(sectionFilter, "All sections", sections);
+      fillSelect(typeFilter, "All types", types.slice(1));
+      fillSelect(difficultyFilter, "All levels", difficulties.slice(1));
+
+      document.querySelectorAll(".tag-filter").forEach((button) => {
+        button.addEventListener("click", handleTagToggle);
+      });
+
+      [searchInput, sectionFilter, typeFilter, difficultyFilter, recentOnly].forEach((element) => {
+        element.addEventListener("input", renderResources);
+        element.addEventListener("change", renderResources);
+      });
+
+      clearFilters.addEventListener("click", () => {
+        searchInput.value = "";
+        sectionFilter.value = "";
+        typeFilter.value = "";
+        difficultyFilter.value = "";
+        recentOnly.checked = false;
+        activeTags.clear();
+        document.querySelectorAll(".tag-filter").forEach((button) => {
+          button.setAttribute("aria-pressed", "false");
+        });
+        renderResources();
+      });
+
+      document.addEventListener("click", (event) => {
+        const toggle = event.target.closest("[data-expand-id]");
+        if (!toggle) {
+          return;
+        }
+        const id = toggle.dataset.expandId;
+        if (expandedConcepts.has(id)) {
+          expandedConcepts.delete(id);
+        } else {
+          expandedConcepts.add(id);
+        }
+        renderResources();
+      });
+
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 500) {
+          backToTop.classList.add("show");
+        } else {
+          backToTop.classList.remove("show");
+        }
+      });
+
+      backToTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      setStats();
+      renderRoadmap();
+      renderResources();
+    </script>
+  </body>
+</html>

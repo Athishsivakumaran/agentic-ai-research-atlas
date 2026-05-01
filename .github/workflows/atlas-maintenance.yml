@@ -1,0 +1,37 @@
+name: Atlas Maintenance
+
+on:
+  schedule:
+    - cron: "17 2 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  link-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run link audit
+        run: |
+          mkdir -p reports
+          python tools/atlas/link_check.py \
+            --source index.html \
+            --json reports/link-check.json \
+            --markdown reports/link-check.md
+
+      - name: Upload audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atlas-link-audit
+          path: reports
